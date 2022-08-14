@@ -37,7 +37,7 @@ async def on_message(message):
     command = ""
     params = ""
 
-    if (message.channel.id == os.getenv('CHANNEL_ID') and message.author.id != os.getenv('BOT_ID') and message.author.id != os.getenv('MEE6_ID') and not message.attachments): 
+    if (message.channel.name == 'ribbys-hall-of-wonders' and message.author.bot == False and not message.attachments and not message.is_system()): 
         if (message.content[0] == '!' and len(message.content) > 1):
 
             space_position = message.content.find(' ')
@@ -48,8 +48,8 @@ async def on_message(message):
             else:
                 command = message.content[1:]
 
-            print(f'Command entered: {command}')
-            print(f'Parameters entered: {params}')
+            #print(f'Command entered: {command}')
+            #print(f'Parameters entered: {params}')
 
             await commands.process_command(message, command, params)
     else:

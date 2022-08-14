@@ -5,8 +5,8 @@ import numpy as np
 import discord
 
 async def process_command(message, command, param):
-    if (command == 'commands'):
-        await commands(message)
+    if (command == 'help'):
+        await help(message)
     elif (command == 'roll'):
         await roll(message, param)
     elif (command == 'hqroll'):
@@ -24,12 +24,12 @@ def can_convert_to_int(string):
     except ValueError:
         return False
 
-async def commands(message):
+async def help(message):
     await message.channel.send(f'Command List:\n \
-            !roll - Roll a specified set of dice.\n \
-            !hqroll - Roll HeroQuest combat dice.\n \
-            !terry - Post a random Terry A. Davis picture.\n \
-            !disappointed - Kevin Sorbo is very disappointed.')
+    !roll - Roll a specified set of dice.\n \
+    !hqroll - Roll HeroQuest combat dice.\n \
+    !terry - Post a random Terry A. Davis picture.\n \
+    !disappointed - Kevin Sorbo is very disappointed.')
 
 async def roll(message, param):
     dice = param.split('d', 1)
