@@ -36,7 +36,7 @@ async def roll(message, param):
     diceTotalDetail = []
 
     if (len(dice) != 2 or not can_convert_to_int(dice[0]) or not can_convert_to_int(dice[1]) or int(dice[0]) > 10 or int(dice[1]) > 100):
-        await message.channel.send('Proper roll format is #d#! (Example: 2d6). Maximum of 10 die and 100 sides.')
+        await message.channel.send('Proper roll format is #d#! (Example: !roll 2d6). Maximum of 10 die and 100 sides.')
         return
 
     for x in range(int(dice[0])):
