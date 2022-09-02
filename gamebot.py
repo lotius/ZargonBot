@@ -37,9 +37,7 @@ async def on_message(message):
     command = ""
     params = ""
 
-    print(f'Content: {message.content}')
-    
-    if (message.channel.name == int(os.getenv('RIBBY_CHANNEL_ID')) and message.author.bot == False and not message.attachments and not message.is_system()): 
+    if (message.channel.name == os.getenv('RIBBY_CHANNEL_ID') and message.author.bot == False and not message.attachments and not message.is_system()): 
         if (message.content[0] == '!' and len(message.content) > 1):
 
             space_position = message.content.find(' ')
