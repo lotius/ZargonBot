@@ -1,4 +1,3 @@
-# bot.py
 import os
 import commands
 
@@ -6,8 +5,9 @@ import discord
 from dotenv import load_dotenv
 
 load_dotenv()
+
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
+GUILD = os.getenv('MY_DISCORD_GUILD')
 
 intents = discord.Intents.default()
 intents.members = True
@@ -17,7 +17,6 @@ client = discord.Client(intents=intents)
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
 
-    # guild = discord.utils.find(lambda g: g.name == GUILD, client.guilds)
     guild = discord.utils.get(client.guilds, name=GUILD)
 
     print(
@@ -29,7 +28,6 @@ async def on_ready():
     for member in guild.members:
         members += "\n - " + member.name + " (" + str(member.id) + ")"
 
-    #members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
 
 @client.event
@@ -37,7 +35,7 @@ async def on_message(message):
     command = ""
     params = ""
 
-    if (message.channel.id == int(os.getenv('RIBBY_CHANNEL_ID')) and message.author.bot == False and not message.attachments and not message.is_system()): 
+    if ((message.channel.id == int(os.getenv('RIBBY_CHANNEL_ID')) or not message.guild.id == int(GUILD)) and message.author.bot == False and not message.attachments and not message.is_system()): 
         if (message.content[0] == '!' and len(message.content) > 1):
 
             space_position = message.content.find(' ')

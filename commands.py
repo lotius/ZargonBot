@@ -25,11 +25,16 @@ def can_convert_to_int(string):
         return False
 
 async def help(message):
-    await message.channel.send(f'Command List:\n \
-    !roll - Roll a specified set of dice.\n \
-    !hqroll - Roll HeroQuest combat dice.\n \
-    !terry - Post a random Terry A. Davis picture.\n \
-    !disappointed - Kevin Sorbo is very disappointed.')
+    if(int(message.guild.id) == os.getenv('MY_DISCORD_GUILD_ID')):
+        await message.channel.send(f'Command List:\n \
+        !roll - Roll a specified set of dice faces.\n \
+        !hqroll - Roll the HeroQuest combat dice.\n \
+        !terry - Post a random Terry A. Davis picture.\n \
+        !disappointed - Kevin Sorbo is very disappointed.')
+    else:
+        await message.channel.send(f'Command List:\n \
+        !roll - Roll a specified set of dice faces.\n \
+        !hqroll - Roll the HeroQuest combat dice.\n')
 
 async def roll(message, param):
     dice = param.split('d', 1)
@@ -72,12 +77,14 @@ async def heroquest_roll(message, param):
     await message.channel.send(file=discord.File('images/hqdice/results.png'))
 
 async def terry(message):
-    path = 'images/terry'
-    files = os.listdir(path)
+    if(int(message.guild.id) == int(os.getenv('MY_DISCORD_GUILD_ID'))):
+        path = 'images/terry'
+        files = os.listdir(path)
 
-    file_to_send = files[random.randint(0, len(files) - 1)]
+        file_to_send = files[random.randint(0, len(files) - 1)]
     
-    await message.channel.send(file=discord.File(f'images/terry/{file_to_send}'))
+        await message.channel.send(file=discord.File(f'images/terry/{file_to_send}'))
 
 async def disappointed(message):
-    await message.channel.send(file=discord.File(f'images/disappointed.gif'))
+    if(int(message.guild.id) == int(os.getenv('MY_DISCORD_GUILD_ID'))):
+        await message.channel.send(file=discord.File(f'images/disappointed.gif'))
