@@ -25,7 +25,7 @@ def can_convert_to_int(string):
         return False
 
 async def help(message):
-    if(int(message.guild.id) == os.getenv('MY_DISCORD_GUILD_ID')):
+    if(int(message.guild.id) == int(os.getenv('MY_DISCORD_GUILD_ID'))):
         await message.channel.send(f'Command List:\n \
         !roll - Roll a specified set of dice faces.\n \
         !hqroll - Roll the HeroQuest combat dice.\n \

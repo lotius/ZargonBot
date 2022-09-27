@@ -53,4 +53,11 @@ async def on_message(message):
     else:
         return
 
+@client.event
+async def on_member_join(member):
+    # get general channel object here
+    if (not int(member.guild.id) == int(os.getenv('MY_DISCORD_GUILD_ID'))):
+        welcome_message = 'Welcome ' + member.name + '! If you\'d like access to the GM (Zargon/Morcar) channel please let us know.'
+        #await channel.send(welcome_message)
+
 client.run(TOKEN)
