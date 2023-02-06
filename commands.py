@@ -4,6 +4,9 @@ import cv2
 import numpy as np
 import discord
 
+from discord.ui import Select, View
+from discord.ext import commands
+
 async def process_command(message, command, param):
     if (command == 'help'):
         await help(message)
@@ -26,6 +29,46 @@ def can_convert_to_int(string):
 
 async def help(message):
     if(int(message.guild.id) == int(os.getenv('MY_DISCORD_GUILD_ID'))):
+        #select = Select(
+        #    options=[
+        #         discord.SelectOption(
+        #             label="!roll", 
+        #             emoji="🎲",
+        #             description="Roll a specified set of dice faces."),
+        #         discord.SelectOption(
+        #             label="!hqroll", 
+        #             emoji="🎲",
+        #             description="Roll the HeroQuest combat dice."),
+        #         discord.SelectOption(
+        #             label="!terry", 
+        #             emoji="😎",
+        #             description="Post a random Terry A. Davis picture."),
+        #         discord.SelectOption(
+        #             label="!disappointed", 
+        #             emoji="💪",
+        #             description="Kevin Sorbo is very disappointed.")
+        #     ]
+        # )
+
+        # async def my_server_help_callback(interaction):
+        #     selected_value = select.values[0]
+        #     if (selected_value == '!roll'):
+        #         response_message = 'Proper roll format is #d#! (Example: !roll 2d6). Maximum of 10 die and 100 sides.'
+        #     elif (selected_value == '!hqroll'):
+        #         response_message = 'HeroQuest combat roll command usage: !hqroll # (Example: !hqroll 3). Max roll of 15.'
+        #     elif (selected_value == '!terry'):
+        #         response_message = 'No parameters required. It\'s just Terry, baby.'
+        #     elif (selected_value == '!disappointed'):
+        #         response_message = 'No parameters required. Sorbo is just really disappointed in you.'
+            
+        #     if (selected_value != ''):
+        #         await interaction.response.send_message(f'**{message.author.name}**: {response_message}')
+
+        # select.callback = my_server_help_callback
+
+        # view = View()
+        # view.add_item(select)
+        # await message.channel.send("ZargonBot commands are available in the dropdown menu.", view=view)
         await message.channel.send(f'Command List:\n \
         !roll - Roll a specified set of dice faces.\n \
         !hqroll - Roll the HeroQuest combat dice.\n \

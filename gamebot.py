@@ -1,15 +1,15 @@
 import os
 import commands
-
 import discord
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('MY_DISCORD_GUILD')
+GUILD = os.getenv('MY_DISCORD_GUILD_ID')
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 client = discord.Client(intents=intents)
 
@@ -46,8 +46,8 @@ async def on_message(message):
             else:
                 command = message.content[1:]
 
-            #print(f'Command entered: {command}')
-            #print(f'Parameters entered: {params}')
+            print(f'Command entered: {command}')
+            print(f'Parameters entered: {params}')
 
             await commands.process_command(message, command, params)
     else:
