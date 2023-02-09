@@ -1,23 +1,18 @@
 import random
 import os
-import cv2
-import numpy as np
-import discord
+import re
 
 from discord.ui import Select, View
 from discord.ext import commands
+from hqdice import checkHeroQuestCombatDiceParameters
 
 async def process_command(message, command, param):
     if (command == 'help'):
-        await help(message)
+        await help(message, param)
     elif (command == 'roll'):
         await roll(message, param)
     elif (command == 'hqroll'):
         await heroquest_roll(message, param)
-    elif (command == 'terry'):
-        await terry(message)
-    elif (command == 'disappointed'):
-        await disappointed(message)
 
 def can_convert_to_int(string):
     try:
@@ -27,57 +22,25 @@ def can_convert_to_int(string):
     except ValueError:
         return False
 
-async def help(message):
-    if(int(message.guild.id) == int(os.getenv('MY_DISCORD_GUILD_ID'))):
-        #select = Select(
-        #    options=[
-        #         discord.SelectOption(
-        #             label="!roll", 
-        #             emoji="🎲",
-        #             description="Roll a specified set of dice faces."),
-        #         discord.SelectOption(
-        #             label="!hqroll", 
-        #             emoji="🎲",
-        #             description="Roll the HeroQuest combat dice."),
-        #         discord.SelectOption(
-        #             label="!terry", 
-        #             emoji="😎",
-        #             description="Post a random Terry A. Davis picture."),
-        #         discord.SelectOption(
-        #             label="!disappointed", 
-        #             emoji="💪",
-        #             description="Kevin Sorbo is very disappointed.")
-        #     ]
-        # )
-
-        # async def my_server_help_callback(interaction):
-        #     selected_value = select.values[0]
-        #     if (selected_value == '!roll'):
-        #         response_message = 'Proper roll format is #d#! (Example: !roll 2d6). Maximum of 10 die and 100 sides.'
-        #     elif (selected_value == '!hqroll'):
-        #         response_message = 'HeroQuest combat roll command usage: !hqroll # (Example: !hqroll 3). Max roll of 15.'
-        #     elif (selected_value == '!terry'):
-        #         response_message = 'No parameters required. It\'s just Terry, baby.'
-        #     elif (selected_value == '!disappointed'):
-        #         response_message = 'No parameters required. Sorbo is just really disappointed in you.'
-            
-        #     if (selected_value != ''):
-        #         await interaction.response.send_message(f'**{message.author.name}**: {response_message}')
-
-        # select.callback = my_server_help_callback
-
-        # view = View()
-        # view.add_item(select)
-        # await message.channel.send("ZargonBot commands are available in the dropdown menu.", view=view)
+async def help(message, param):
+    if (len(param) == 0):
         await message.channel.send(f'Command List:\n \
-        !roll - Roll a specified set of dice faces.\n \
-        !hqroll - Roll the HeroQuest combat dice.\n \
-        !terry - Post a random Terry A. Davis picture.\n \
-        !disappointed - Kevin Sorbo is very disappointed.')
-    else:
-        await message.channel.send(f'Command List:\n \
-        !roll - Roll a specified set of dice faces.\n \
-        !hqroll - Roll the HeroQuest combat dice.\n')
+!roll - Roll a specified set of dice faces. For example, if you\'d like to roll a 2d6 type: !roll 2d6\n \
+!hqroll - Roll the HeroQuest combat dice. For example, if you\'d like to roll 3 combat dice type: !hqroll 3\n \
+Use !help _command_ to get more specific information about an available command.')
+    elif (param == 'roll'):
+        await message.channel.send(f'**Roll standard dice**:\n \
+To roll standard dice use the _**!roll**_ command followed by the number of dice you wish to roll (up to 10), followed by \
+how many sides each die will have (up to 100).\n_Examples: !roll 2d6, !roll 1d20, !roll 3d4_')
+    elif (param == 'hqroll'):
+        await message.channel.send(f'**Roll HeroQuest combat dice**:\n \
+To roll HeroQuest dice use the _**!hqroll**_ command followed by the number of dice you wish \
+to roll (up to 15). Optionally, you can include one of the 5 German variant dice colors \
+in order to roll that set instead of standard dice, and even multiple colors at once.\n\n \
+Available variant dice colors are blue, orange, green, purple, yellow, and black.\n \
+**Examples:** _**!hqroll 2**, **!hqroll 5**, **!hqroll 6 orange**, **!hqroll 4 green**_\n \
+You can also specify multiple dice colors in a single command\n \
+**Examples:** _**!hqroll 2 white 2 orange**, **!hqroll 1 white 3 green 2 blue**_')
 
 async def roll(message, param):
     dice = param.split('d', 1)
@@ -93,41 +56,17 @@ async def roll(message, param):
     await message.channel.send(f'**{message.author.name}** rolled **{sum(diceTotalDetail)}** _{diceTotalDetail}_.')
 
 async def heroquest_roll(message, param):
-    image = cv2.imread('images/hqdice/dicefaces.png', cv2.IMREAD_COLOR)
-    skull = image[0 : 100, 0 : 110] # y1:y2, x1:x2
-    whiteshield = image[0 : 100, 110 : 220]
-    blackshield = image[0 : 100, 220 : 330]
+    params = param.split(' ', 1)
     diceRolls = []
 
-    if (can_convert_to_int(param) and int(param) > 0 and int(param) <= 15):
-        for x in range(int(param)):
-            diceRolls.append(random.randint(1, 6))
+    # Determine if regex was matched. A digit can be matched by itself, or a combination of a digit followed by a
+    # word can be matched. If a digit and word combination is matched it is allowed to be repeated.
+    regex = re.compile(r'^(\d{1,2}|(\d{1,2}\s[a-zA-Z]+\b\s?)+)$')
+
+    match = re.match(regex, param)
+    if match:
+        await checkHeroQuestCombatDiceParameters(message, param)
     else:
-        await message.channel.send('HeroQuest combat roll command usage: !hqroll # (Example: !hqroll 3). Max roll of 15.')
+        await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help hqdice_ \
+to review the proper usage of the _hqdice_ command.')
         return
-    
-    result_image = np.zeros((100, len(diceRolls) * 110, 3), np.uint8)
-    for x in range(len(diceRolls)):
-        if (diceRolls[x] == 1 or diceRolls[x] == 2 or diceRolls[x] == 3):
-            result_image[0 : 100, 110 * x : 110 * (x + 1)] = skull
-        elif (diceRolls[x] == 4 or diceRolls[x] == 5):
-            result_image[0 : 100, 110 * x : 110 * (x + 1)] = whiteshield
-        elif (diceRolls[x] == 6):
-            result_image[0 : 100, 110 * x : 110 * (x + 1)] = blackshield
-    
-    cv2.imwrite('images/hqdice/results.png', result_image)
-
-    await message.channel.send(file=discord.File('images/hqdice/results.png'))
-
-async def terry(message):
-    if(int(message.guild.id) == int(os.getenv('MY_DISCORD_GUILD_ID'))):
-        path = 'images/terry'
-        files = os.listdir(path)
-
-        file_to_send = files[random.randint(0, len(files) - 1)]
-    
-        await message.channel.send(file=discord.File(f'images/terry/{file_to_send}'))
-
-async def disappointed(message):
-    if(int(message.guild.id) == int(os.getenv('MY_DISCORD_GUILD_ID'))):
-        await message.channel.send(file=discord.File(f'images/disappointed.gif'))
