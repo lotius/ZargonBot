@@ -50,7 +50,7 @@ are red and/or black.')
 # 2. The number of dice to be rolled.
 async def rollDoomCombatDice(message, diceToRoll):
     red = [{'face': 'red-blank.png', 'numOfFaces': 1}, {'face': 'red-1shot.png', 'numOfFaces': 3}, {'face': 'red-2shots.png', 'numOfFaces': 2}]
-    black = [{'face': 'black-1shot.png', 'numOfFaces': 2}, {'face': 'black-2shots', 'numOfFaces': 3}, {'face': 'black-3shots', 'numOfFaces': 1}]
+    black = [{'face': 'black-1shot.png', 'numOfFaces': 2}, {'face': 'black-2shots.png', 'numOfFaces': 3}, {'face': 'black-3shots.png', 'numOfFaces': 1}]
     diceFaceCount = 0
     diceImages = {}
     rolledDice = []
