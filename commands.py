@@ -6,16 +6,19 @@ from discord.ui import Select, View
 from discord.ext import commands
 from hqdice import checkHeroQuestCombatDiceParameters
 from scdice import checkSpaceCrusadeCombatDiceParameters
+from doomdice import checkDoomCombatDiceParameters
 
 async def process_command(message, command, param):
     if (command == 'help'):
         await help(message, param)
-    elif (command == 'roll'):
+    elif (command == 'roll' or command == 'dice'):
         await roll(message, param)
-    elif (command == 'hqroll'):
+    elif (command == 'hqroll' or command == 'hqdice'):
         await heroquest_roll(message, param)
-    elif (command == 'scroll' or command == 'sqroll'):
+    elif (command == 'scroll' or command == 'sqroll' or command == 'scdice' or command == 'sqdice'):
         await spacecrusade_roll(message, param)
+    elif (command == 'doomroll' or command == 'doomdice'):
+        await doom_roll(message, param)
 
 def can_convert_to_int(string):
     try:
@@ -32,6 +35,8 @@ async def help(message, param):
 !hqroll - Roll the HeroQuest combat dice. For example, if you\'d like to roll 3 combat dice type: !hqroll 3\n \
 !scroll or !sqroll - Roll the Space Crusade combat dice. For example, if you\'d like to roll 2 white \
 combat dice type: !scroll 2 white\n \
+!doomdice - Roll the DOOM 2016 board game combat dice. For example, if you\'d like to roll 2 red \
+combat dice type: !doomdice 2 red\n \
 Use !help _command_ to get more specific information about an available command.')
     elif (param == 'roll'):
         await message.channel.send(f'**Roll standard dice**:\n \
@@ -52,6 +57,12 @@ To roll Space Crusade dice use the _**!scroll**_ or _**!sqroll**_ command follow
 number of dice you wish to roll, followed by the color you wish to roll. In Space Crusade \
 you can roll up to 4 white and up to 4 red dice.\n \
 **Examples:** _**!scroll 2 white**, **!scroll 1 red 3 white**, **!sqroll 1 white 2 red**_')
+    elif (param == 'doomroll' or param == 'doomdice'):
+        await message.channel.send(f'**Roll DOOM (2016) combat dice**:\n \
+To roll DOOM dice use the _**!doomroll**_ or _**!doomdice**_ command followed by the \
+number of dice you wish to roll, followed by the color you wish to roll. In the Doom 2016 \
+board game you can roll up to 4 red and up to 2 black dice.\n \
+**Examples:** _**!doomdice 2 red**, **!doomdice 2 red 2 black**, **!doomdice 1 red 3 black**_')
 
 async def roll(message, param):
     dice = param.split('d', 1)
@@ -80,7 +91,6 @@ to review the proper usage of the _hqroll_ command.')
         return
 
 async def spacecrusade_roll(message, param):
-    print('Entered space crusade function.')
     # Determine if regex was matched. A combination of a digit followed by a
     # word can be matched up to 2 times as there are only red and white dice in Space Crusade.
     regex = re.compile(r'^(\d{1}\s[a-zA-Z]+\b\s?){1,2}$')
@@ -91,4 +101,17 @@ async def spacecrusade_roll(message, param):
     else:
         await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help scroll_ \
 to review the proper usage of the _scroll_ command.')
+        return
+    
+async def doom_roll(message, param):
+    # Determine if regex was matched. A combination of a digit followed by a
+    # word can be matched up to 2 times as there are only red and black dice in DOOM.
+    regex = re.compile(r'^(\d{1}\s[a-zA-Z]+\b\s?){1,2}$')
+
+    match = re.match(regex, param)
+    if match:
+        await checkDoomCombatDiceParameters(message, param)
+    else:
+        await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help doomdice_ \
+to review the proper usage of the _doomdice_ command.')
         return
