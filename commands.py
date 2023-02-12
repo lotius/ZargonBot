@@ -20,6 +20,8 @@ async def process_command(message, command, param):
         await spacecrusade_roll(message, param)
     elif (command == 'doomroll' or command == 'doomdice'):
         await doom_roll(message, param)
+    elif (command == 'descentroll' or command == 'descentdice'):
+        await descent_roll(message, param)
 
 def can_convert_to_int(string):
     try:
