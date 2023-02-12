@@ -56,7 +56,7 @@ Available variant dice colors are blue, orange, green, purple, yellow, and black
 **Examples:** _**!hqroll 2**, **!hqroll 5**, **!hqroll 6 orange**, **!hqroll 4 green**_\n \
 You can also specify multiple dice colors in a single command\n \
 **Examples:** _**!hqroll 2 white 2 orange**, **!hqroll 1 white 3 green 2 blue**_')
-    elif (param == 'scroll' or param == 'sqroll'):
+    elif (param == 'scroll' or param == 'sqroll' or param == 'scdice' or param == 'sqdice'):
         await message.channel.send(f'**Roll Space Crusade combat dice**:\n \
 To roll Space Crusade dice use the _**!scroll**_ or _**!sqroll**_ command followed by the \
 number of dice you wish to roll, followed by the color you wish to roll. In Space Crusade \
