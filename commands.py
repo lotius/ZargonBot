@@ -7,6 +7,7 @@ from discord.ext import commands
 from hqdice import checkHeroQuestCombatDiceParameters
 from scdice import checkSpaceCrusadeCombatDiceParameters
 from doomdice import checkDoomCombatDiceParameters
+from descentdice import checkDescentCombatDiceParameters
 
 async def process_command(message, command, param):
     if (command == 'help'):
@@ -37,6 +38,8 @@ async def help(message, param):
 combat dice type: !scroll 2 white\n \
 !doomdice - Roll the DOOM 2016 board game combat dice. For example, if you\'d like to roll 2 red \
 combat dice type: !doomdice 2 red\n \
+!descentdice - Roll the Descent 2nd Edition board game combat dice. For example, if you\'d like to roll 2 red \
+combat dice type: !descentdice 2 red\n \
 Use !help _command_ to get more specific information about an available command.')
     elif (param == 'roll'):
         await message.channel.send(f'**Roll standard dice**:\n \
@@ -60,9 +63,15 @@ you can roll up to 4 white and up to 4 red dice.\n \
     elif (param == 'doomroll' or param == 'doomdice'):
         await message.channel.send(f'**Roll DOOM (2016) combat dice**:\n \
 To roll DOOM dice use the _**!doomroll**_ or _**!doomdice**_ command followed by the \
-number of dice you wish to roll, followed by the color you wish to roll. In the Doom 2016 \
+number of dice you wish to roll, followed by the color you wish to roll. In the DOOM 2016 \
 board game you can roll up to 4 red and up to 2 black dice.\n \
 **Examples:** _**!doomdice 2 red**, **!doomdice 2 red 2 black**, **!doomdice 1 red 3 black**_')
+    elif (param == 'descentroll' or param == 'descentdice'):
+        await message.channel.send(f'**Roll Descent 2nd Edition combat dice**:\n \
+To roll Descent dice use the _**!descentroll**_ or _**!descentdice**_ command followed by the \
+number of dice you wish to roll, followed by the color you wish to roll. In the Descent 2e \
+board game you can roll up to 2 red, 1 blue, 2 yellow, 1 brown, 2 gray/grey, and 1 black dice.\n \
+**Examples:** _**!descentdice 2 red**, **!descentdice 2 red 1 blue**, **!descentdice 1 brown 1 gray**_')
 
 async def roll(message, param):
     dice = param.split('d', 1)
@@ -114,4 +123,17 @@ async def doom_roll(message, param):
     else:
         await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help doomdice_ \
 to review the proper usage of the _doomdice_ command.')
+        return
+    
+async def descent_roll(message, param):
+    # Determine if regex was matched. A combination of a digit followed by a
+    # word can be matched many times to cover all possible combat rolls.
+    regex = re.compile(r'^(\d{1}\s[a-zA-Z]+\b\s?)+$')
+
+    match = re.match(regex, param)
+    if match:
+        await checkDescentCombatDiceParameters(message, param)
+    else:
+        await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help descentdice_ \
+to review the proper usage of the _descentdice_ command.')
         return
