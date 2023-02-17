@@ -77,6 +77,12 @@ To roll Descent dice use the _**!descentroll**_ or _**!descentdice**_ command fo
 number of dice you wish to roll, followed by the color you wish to roll. In the Descent 2e \
 board game you can roll up to 2 red, 1 blue, 2 yellow, 1 brown, 2 gray/grey, and 1 black dice.\n \
 **Examples:** _**!descentdice 2 red**, **!descentdice 2 red 1 blue**, **!descentdice 1 brown 1 gray**_')
+    elif (param == 'drgroll' or param == 'drgdice'):
+        await message.channel.send(f'**Deep Rock Galactic board game dice**:\n \
+To roll Deep Rock Galactic dice use the _**!drgroll**_ or _**!drgdice**_ command followed by the \
+number of dice you wish to roll, followed by the color you wish to roll. In the DRG \
+board game you can roll up to 2 red, 2 blue, 3 yellow, 3 green, 1 gray/grey, 2 white, and 2 black dice.\n \
+**Examples:** _**!drgdice 2 yellow**, **!drgdice 2 red**, **!drgdice 3 green**_')
 
 async def roll(message, param):
     diceTotalDetail = []
