@@ -6,6 +6,7 @@ from hqdice import checkHeroQuestCombatDiceParameters
 from scdice import checkSpaceCrusadeCombatDiceParameters
 from doomdice import checkDoomCombatDiceParameters
 from descentdice import checkDescentCombatDiceParameters
+from drgdice import checkDRGCombatDiceParameters
 
 async def process_command(message, command, param):
     if (command == 'help'):
@@ -20,6 +21,8 @@ async def process_command(message, command, param):
         await doom_roll(message, param)
     elif (command == 'descentroll' or command == 'descentdice'):
         await descent_roll(message, param)
+    elif (command == 'drgroll' or command == 'drgdice'):
+        await drg_roll(message, param)
 
 def can_convert_to_int(string):
     try:
@@ -146,4 +149,17 @@ async def descent_roll(message, param):
     else:
         await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help descentdice_ \
 to review the proper usage of the _descentdice_ command.')
+        return
+    
+async def drg_roll(message, param):
+    # Determine if regex was matched. A combination of a digit followed by a
+    # word can be matched many times to cover all possible combat rolls.
+    regex = re.compile(r'^(\d{1}\s[a-zA-Z]+\b\s?)+$')
+
+    match = re.match(regex, param)
+    if match:
+        await checkDRGCombatDiceParameters(message, param)
+    else:
+        await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help drgdice_ \
+to review the proper usage of the _drgdice_ command.')
         return
