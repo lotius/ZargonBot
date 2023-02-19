@@ -69,7 +69,7 @@ async def rollDoomCombatDice(message, diceToRoll):
         for coloredFace in currentFace:
             for x in range(0, coloredFace['numOfFaces']):
                 diceFaceCount = diceFaceCount + 1
-                diceImages[diceFaceCount] = cv2.imread('images/doom/' + coloredFace['face'], cv2.IMREAD_COLOR)
+                diceImages[diceFaceCount] = cv2.imread('images/doom/' + coloredFace['face'], cv2.IMREAD_UNCHANGED)
 
         # Roll the dice and save the appropriate face to an array
         for x in range(int(currentRequestedFace['numToRoll'])):
@@ -78,10 +78,13 @@ async def rollDoomCombatDice(message, diceToRoll):
         diceFaceCount = 0
         diceImages.clear()
 
-    result_image = np.zeros((100, len(rolledDice) * 108, 3), np.uint8)
+    result_image = np.zeros((100, len(rolledDice) * 108, 4), np.uint8)
+    result_image[:, :, 3] = 0
+
     x = 0
     for currentDiceFace in rolledDice:
-        result_image[0 : 100, 108 * x : 108 * (x + 1)] = currentDiceFace
+        result_image[0 : 100, 108 * x : 108 * (x + 1), 0:3] = currentDiceFace[:, :, 0:3]
+        result_image[0 : 100, 108 * x : 108 * (x + 1), 3] = currentDiceFace[:, :, 3]
         x = x + 1
 
     cv2.imwrite('images/doom/results.png', result_image)
