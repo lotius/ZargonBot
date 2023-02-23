@@ -48,6 +48,8 @@ combat dice type: !scroll 2 white\n \
 combat dice type: !doomdice 2 red\n \
 !descentdice - Roll the Descent 2nd Edition board game combat dice. For example, if you\'d like to roll 2 red \
 combat dice type: !descentdice 2 red\n \
+!terry - Post a random Terry A. Davis picture.\n \
+!disappointed - Kevin Sorbo is very disappointed.\n \
 Use !help _command_ to get more specific information about an available command.')
     elif (param == 'roll'):
         await message.channel.send(f'**Roll standard dice**:\n \
@@ -88,6 +90,12 @@ To roll Deep Rock Galactic dice use the _**!drgroll**_ or _**!drgdice**_ command
 number of dice you wish to roll, followed by the color you wish to roll. In the DRG \
 board game you can roll up to 2 red, 2 blue, 3 yellow, 3 green, 1 gray/grey, 2 white, and 2 black dice.\n \
 **Examples:** _**!drgdice 2 yellow**, **!drgdice 2 red**, **!drgdice 3 green**_')
+    elif (param == 'terry'):
+        await message.channel.send(f'**Terry A. Davis**:\n \
+This command displays a random image of our Lord and Savior, Terry A. Davis.')
+    elif (param == 'disappointed'):
+        await message.channel.send(f'**Kevin Sorbo is disappointed**:\n \
+Sorbo is very disappointed.')
 
 async def roll(message, param):
     diceTotalDetail = []
