@@ -24,6 +24,10 @@ async def process_command(message, command, param):
         await descent_roll(message, param)
     elif (command == 'drgroll' or command == 'drgdice'):
         await drg_roll(message, param)
+    elif (command == 'terry'):
+        await terry(message)
+    elif (command == 'disappointed'):
+        await disappointed(message)
 
 def can_convert_to_int(string):
     try:
