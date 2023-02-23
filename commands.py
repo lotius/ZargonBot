@@ -1,6 +1,7 @@
 import random
 import os
 import re
+import discord
 
 from hqdice import checkHeroQuestCombatDiceParameters
 from scdice import checkSpaceCrusadeCombatDiceParameters
@@ -169,3 +170,14 @@ async def drg_roll(message, param):
         await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help drgdice_ \
 to review the proper usage of the _drgdice_ command.')
         return
+    
+async def terry(message):
+    path = 'images/terry'
+    files = os.listdir(path)
+
+    file_to_send = files[random.randint(0, len(files) - 1)]
+
+    await message.channel.send(file=discord.File(f'images/terry/{file_to_send}'))
+
+async def disappointed(message):
+    await message.channel.send(file=discord.File(f'images/disappointed.gif'))
