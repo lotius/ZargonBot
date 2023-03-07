@@ -16,10 +16,10 @@ async def checkDRGCombatDiceParameters(message, param):
         currentColor = currentParam[1]
     
         totalDiceRolled = totalDiceRolled + numToRoll
-        # Ensure both the current numToRoll and the cumulative total dice rolled do not exceed 9, and
-        # red is only rolled up to 2 times, blue only rolled up to 1 time, yellow only rolled up to 
-        # 2 times, brown only rolled up to 1 time, gray only rolled up to 2 times, and black only
-        # rolled up to 1 time.
+        # Ensure both the current numToRoll and the cumulative total dice rolled do not exceed 3, and
+        # red is only rolled up to 2 times, blue only rolled up to 2 times, yellow only rolled up to 
+        # 3 times, green only rolled up to 3 times, white only rolled up to 2 times, black only
+        # rolled up to 2 times, and gray only rolled up to 1 times.
         if (totalDiceRolled > 3 or (currentColor == 'red' and numToRoll > 2) or (currentColor == 'blue' and numToRoll > 2)
             or (currentColor == 'yellow' and numToRoll > 3) or (currentColor == 'green' and numToRoll > 3)
             or (currentColor == 'white' and numToRoll > 2) or (currentColor == 'black' and numToRoll > 2) 

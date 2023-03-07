@@ -8,26 +8,30 @@ from scdice import checkSpaceCrusadeCombatDiceParameters
 from doomdice import checkDoomCombatDiceParameters
 from descentdice import checkDescentCombatDiceParameters
 from drgdice import checkDRGCombatDiceParameters
+from boardgamedice import roll_board_game_dice
+from dice import dice_sets
 
 async def process_command(message, command, param):
     if (command == 'help'):
         await help(message, param)
     elif (command == 'roll' or command == 'dice'):
         await roll(message, param)
-    elif (command == 'hqroll' or command == 'hqdice'):
-        await heroquest_roll(message, param)
-    elif (command == 'scroll' or command == 'sqroll' or command == 'scdice' or command == 'sqdice'):
-        await spacecrusade_roll(message, param)
-    elif (command == 'doomroll' or command == 'doomdice'):
-        await doom_roll(message, param)
-    elif (command == 'descentroll' or command == 'descentdice'):
-        await descent_roll(message, param)
-    elif (command == 'drgroll' or command == 'drgdice'):
-        await drg_roll(message, param)
+#    elif (command == 'hqroll' or command == 'hqdice'):
+#        await heroquest_roll(message, param)
+#    elif (command == 'scroll' or command == 'sqroll' or command == 'scdice' or command == 'sqdice'):
+#        await spacecrusade_roll(message, param)
+#    elif (command == 'doomroll' or command == 'doomdice'):
+#        await doom_roll(message, param)
+#    elif (command == 'descentroll' or command == 'descentdice'):
+#        await descent_roll(message, param)
+#    elif (command == 'drgroll' or command == 'drgdice'):
+#        await drg_roll(message, param)
     elif (command == 'terry'):
         await terry(message)
     elif (command == 'disappointed'):
         await disappointed(message)
+    elif (command in dice_sets):
+        await roll_board_game_dice(message, command, param)
 
 def can_convert_to_int(string):
     try:
@@ -40,22 +44,19 @@ def can_convert_to_int(string):
 async def help(message, param):
     if (len(param) == 0):
         await message.channel.send(f'Command List:\n \
-!roll - Roll a specified set of dice faces. For example, if you\'d like to roll a 2d6 type: !roll 2d6\n \
-!hqroll - Roll the HeroQuest combat dice. For example, if you\'d like to roll 3 combat dice type: !hqroll 3\n \
-!scroll or !sqroll - Roll the Space Crusade combat dice. For example, if you\'d like to roll 2 white \
-combat dice type: !scroll 2 white\n \
-!doomdice - Roll the DOOM 2016 board game combat dice. For example, if you\'d like to roll 2 red \
-combat dice type: !doomdice 2 red\n \
-!descentdice - Roll the Descent 2nd Edition board game combat dice. For example, if you\'d like to roll 2 red \
-combat dice type: !descentdice 2 red\n \
+!roll - Roll a specified set of dice faces. For more information type _!help roll_\n \
+!hqroll - Roll the HeroQuest combat dice. For more information type _!help hqroll_\n \
+!scroll or !sqroll - Roll the Space Crusade combat dice. For more information type _!help scroll_\n \
+!doomdice - Roll the DOOM 2016 board game combat dice. For more information type _!help doomdice_\n \
+!descentdice - Roll the Descent 2nd Edition board game combat dice. For more information type _!help descentdice_\n \
 !terry - Post a random Terry A. Davis picture.\n \
 !disappointed - Kevin Sorbo is very disappointed.\n \
 Use !help _command_ to get more specific information about an available command.')
     elif (param == 'roll'):
-        await message.channel.send(f'**Roll standard dice**:\n \
+        await message.channel.send(f'**Roll dice**:\n \
 To roll standard dice use the _**!roll**_ command followed by the number of dice you wish to roll (up to 10), followed by \
 how many sides each die will have (up to 100). If you leave off the number of dice you wish to roll and only input the \
-number of sides for the die to have the bot will roll 1 die (ie !roll d100)\n \
+number of sides for the die to have the bot will roll 1 die with that many sides. (ie !roll d100)\n \
 _Examples: !roll 2d6, !roll d20, !roll 3d4, !roll d100_')
     elif (param == 'hqroll'):
         await message.channel.send(f'**Roll HeroQuest combat dice**:\n \
@@ -73,7 +74,7 @@ number of dice you wish to roll, followed by the color you wish to roll. In Spac
 you can roll up to 4 white and up to 4 red dice.\n \
 **Examples:** _**!scroll 2 white**, **!scroll 1 red 3 white**, **!sqroll 1 white 2 red**_')
     elif (param == 'doomroll' or param == 'doomdice'):
-        await message.channel.send(f'**Roll DOOM (2016) combat dice**:\n \
+        await message.channel.send(f'**Roll DOOM (2016) board game combat dice**:\n \
 To roll DOOM dice use the _**!doomroll**_ or _**!doomdice**_ command followed by the \
 number of dice you wish to roll, followed by the color you wish to roll. In the DOOM 2016 \
 board game you can roll up to 4 red and up to 2 black dice.\n \
@@ -113,7 +114,7 @@ async def roll(message, param):
             for x in range(int(dice[0])):
                 diceTotalDetail.append(random.randint(1, int(dice[1])))
     else:
-        await message.channel.send('Proper roll format is #d#! (Example: !roll 2d6). Maximum of 10 die and 100 sides.')
+        await message.channel.send('Proper roll format is **#d#** or **d#**! (Examples: !roll 2d6 or !roll d20). Maximum of 10 dice and 100 sides.')
         return
 
     await message.channel.send(f'**{message.author.name}** rolled **{sum(diceTotalDetail)}** _{diceTotalDetail}_.')
