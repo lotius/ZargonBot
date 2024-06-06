@@ -8,30 +8,33 @@ from scdice import checkSpaceCrusadeCombatDiceParameters
 from doomdice import checkDoomCombatDiceParameters
 from descentdice import checkDescentCombatDiceParameters
 from drgdice import checkDRGCombatDiceParameters
-from boardgamedice import roll_board_game_dice
-from dice import dice_sets
+from oqdice import checkOrcQuestDiceParameters
+#from boardgamedice import roll_board_game_dice
+#from dice import dice_sets
 
 async def process_command(message, command, param):
     if (command == 'help'):
         await help(message, param)
     elif (command == 'roll' or command == 'dice'):
         await roll(message, param)
-#    elif (command == 'hqroll' or command == 'hqdice'):
-#        await heroquest_roll(message, param)
-#    elif (command == 'scroll' or command == 'sqroll' or command == 'scdice' or command == 'sqdice'):
-#        await spacecrusade_roll(message, param)
-#    elif (command == 'doomroll' or command == 'doomdice'):
-#        await doom_roll(message, param)
-#    elif (command == 'descentroll' or command == 'descentdice'):
-#        await descent_roll(message, param)
-#    elif (command == 'drgroll' or command == 'drgdice'):
-#        await drg_roll(message, param)
+    elif (command == 'hqroll' or command == 'hqdice'):
+        await heroquest_roll(message, param)
+    elif (command == 'scroll' or command == 'sqroll' or command == 'scdice' or command == 'sqdice'):
+        await spacecrusade_roll(message, param)
+    elif (command == 'doomroll' or command == 'doomdice'):
+        await doom_roll(message, param)
+    elif (command == 'descentroll' or command == 'descentdice'):
+        await descent_roll(message, param)
+    elif (command == 'drgroll' or command == 'drgdice'):
+        await drg_roll(message, param)
+    elif (command == 'oqroll'):
+        await orcquest_roll(message, param)
     elif (command == 'terry'):
         await terry(message)
     elif (command == 'disappointed'):
         await disappointed(message)
-    elif (command in dice_sets):
-        await roll_board_game_dice(message, command, param)
+#    elif (command in dice_sets):
+#        await roll_board_game_dice(message, command, param)
 
 def can_convert_to_int(string):
     try:
@@ -91,6 +94,14 @@ To roll Deep Rock Galactic dice use the _**!drgroll**_ or _**!drgdice**_ command
 number of dice you wish to roll, followed by the color you wish to roll. In the DRG \
 board game you can roll up to 2 red, 2 blue, 3 yellow, 3 green, 1 gray/grey, 2 white, and 2 black dice.\n \
 **Examples:** _**!drgdice 2 yellow**, **!drgdice 2 red**, **!drgdice 3 green**_')
+    elif (param == 'oqroll'):
+        await message.channel.send(f'**Roll OrcQuest combat dice**:\n\
+To roll OrcQuest dice use the _**!oqroll**_ command followed by the number of dice you \
+wish to roll, followed by the type of dice you wish to roll. In OrcQuest you can roll up \
+to 3 of a single attack or defense dice and up to 2 badass dice of each color. \n\
+Available dice types are whiteattack, whitedefend, greyattack, greydefend, blackattack, blackdefend, greenbadass, bluebadass\n\
+**Examples:** _**!oqroll 2 whiteattack 1 whitedefend**, **oqroll 1 blackattack 1 greydefend 1 whitedefend**, \n\
+**!oqroll 1 whiteattack 1 greyattack 1 greenbadass 2 whitedefend**_')
     elif (param == 'terry'):
         await message.channel.send(f'**Terry A. Davis**:\n \
 This command displays a random image of our Lord and Savior, Terry A. Davis.')
@@ -144,7 +155,20 @@ async def spacecrusade_roll(message, param):
         await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help scroll_ \
 to review the proper usage of the _scroll_ command.')
         return
-    
+
+async def orcquest_roll(message, param):
+    # Determine if regex was matched. A digit can be matched by itself, or a combination of a digit followed by a
+    # word can be matched. If a digit and word combination is matched it is allowed to be repeated.
+    regex = re.compile(r'^((\d{1,2}\s[a-zA-Z]+\b\s?)+)$')
+
+    match = re.match(regex, param)
+    if match:
+        await checkOrcQuestDiceParameters(message, param)
+    else:
+        await message.channel.send(f'**{message.author.name}** your input pattern is invalid! Please use _!help oqroll_ \
+to review the proper usage of the _oqroll_ command.')
+        return
+
 async def doom_roll(message, param):
     # Determine if regex was matched. A combination of a digit followed by a
     # word can be matched up to 2 times as there are only red and black dice in DOOM.

@@ -16,17 +16,13 @@ async def checkDRGCombatDiceParameters(message, param):
         currentColor = currentParam[1]
     
         totalDiceRolled = totalDiceRolled + numToRoll
-        # Ensure both the current numToRoll and the cumulative total dice rolled do not exceed 3, and
-        # red is only rolled up to 2 times, blue only rolled up to 2 times, yellow only rolled up to 
-        # 3 times, green only rolled up to 3 times, white only rolled up to 2 times, black only
-        # rolled up to 2 times, and gray only rolled up to 1 times.
-        if (totalDiceRolled > 3 or (currentColor == 'red' and numToRoll > 2) or (currentColor == 'blue' and numToRoll > 2)
+        if (totalDiceRolled > 8 or (currentColor == 'red' and numToRoll > 2) or (currentColor == 'blue' and numToRoll > 2)
             or (currentColor == 'yellow' and numToRoll > 3) or (currentColor == 'green' and numToRoll > 3)
             or (currentColor == 'white' and numToRoll > 2) or (currentColor == 'black' and numToRoll > 2) 
-            or (currentColor == 'gray' and numToRoll > 1)):
+            or (currentColor == 'gold' and numToRoll > 2)):
             await message.channel.send('Sorry, but you cannot roll more than 2 of red dice, more than 2 blue die, \
-more than 3 of yellow dice, more than 3 of green dice, more than 1 of gray/grey dice, more than 2 of black dice, \
-more than 2 white dice, and/or up to 3 total dice in a single command.')
+more than 3 of yellow dice, more than 3 of green dice, more than 2 of gold dice, more than 2 of black dice, \
+more than 2 white dice, and/or up to 8 total dice in a single command.')
             return
         
         # Ensure that at least 1 die of each requested color is rolled.
@@ -36,10 +32,10 @@ more than 2 white dice, and/or up to 3 total dice in a single command.')
         
         # Ensure that the colors requested are available.
         if (currentColor != 'red' and currentColor != 'blue' and currentColor != 'yellow' 
-            and currentColor != 'green' and currentColor != 'gray' and currentColor != 'grey' 
+            and currentColor != 'green' and currentColor != 'gold' 
             and currentColor != 'black' and currentColor != 'white'):
             await message.channel.send('Sorry, but you\'ve included a die color that isn\'t available. Available colors \
-are red, blue, yellow, green, gray/grey, white, and black.')
+are red, blue, yellow, green, gold, white, and black.')
             return
         
         for existingDice in diceToRoll:
@@ -61,7 +57,7 @@ async def rollDRGCombatDice(message, diceToRoll):
     blue = [{'face': 'blue-1piercing.png', 'numOfFaces': 3}, {'face': 'blue-2piercing.png', 'numOfFaces': 2}, {'face': 'blue-blank.png', 'numOfFaces': 1}]
     yellow = [{'face': 'yellow-1flame.png', 'numOfFaces': 3}, {'face': 'yellow-2flames.png', 'numOfFaces': 1}, {'face': 'yellow-blank.png', 'numOfFaces': 2}]
     green = [{'face': 'green-bullet.png', 'numOfFaces': 4}, {'face': 'green-blank.png', 'numOfFaces': 2}]
-    gray = [{'face': 'gray-gold.png', 'numOfFaces': 2}, {'face': 'gray-nitra.png', 'numOfFaces': 2}, {'face': 'gray-blank.png', 'numOfFaces': 2}]
+    gold = [{'face': 'gold-gold.png', 'numOfFaces': 2}, {'face': 'gold-nitra.png', 'numOfFaces': 2}, {'face': 'gold-blank.png', 'numOfFaces': 2}]
     white = [{'face': 'white-1pickaxe.png', 'numOfFaces': 3}, {'face': 'white-2pickaxes.png', 'numOfFaces': 2}, {'face': 'white-blank.png', 'numOfFaces': 1}]
     black = [{'face': 'black-damage.png', 'numOfFaces': 3}, {'face': 'black-specialeffect.png', 'numOfFaces': 2}, {'face': 'black-blank.png', 'numOfFaces': 1}]
     diceFaceCount = 0
@@ -81,8 +77,8 @@ async def rollDRGCombatDice(message, diceToRoll):
             currentFace = yellow
         elif (currentFaceColor == 'green'):
             currentFace = green
-        elif (currentFaceColor == 'gray' or currentFaceColor == 'grey'):
-            currentFace = gray
+        elif (currentFaceColor == 'gold'):
+            currentFace = gold
         elif (currentFaceColor == 'white'):
             currentFace = white
         elif (currentFaceColor == 'black'):
