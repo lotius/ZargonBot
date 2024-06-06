@@ -56,7 +56,6 @@ async def on_ready():
 
     # Start the scheduling task
     weekly_message.start()
-    test_message.start()
     
 @client.event
 async def on_message(message):
