@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-TOKEN = int(os.getenv('DISCORD_TOKEN'))
+TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD_NAME = int(os.getenv('MY_DISCORD_GUILD'))
 RIBBY_CHANNEL_ID = int(os.getenv('RIBBY_CHANNEL_ID'))
 
