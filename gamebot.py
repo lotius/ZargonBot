@@ -21,7 +21,7 @@ client = discord.Client(intents=intents)
 @tasks.loop(minutes = 1)
 async def weekly_message():
     # Calculate the next Tuesday at 1 PM
-    target_time = datetime.now(pytz.timezone("America/Chicago")).replace(hour=13, minute=25, second=0, microsecond=0)
+    target_time = datetime.now(pytz.timezone("America/Chicago")).replace(hour=13, minute=0, second=0, microsecond=0)
     
     days_ahead = 1 - target_time.weekday()  # 1 corresponds to Tuesday
     if days_ahead <= 0:  # If today is Tuesday and we are past 1 PM, set for next week
