@@ -12,6 +12,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD_NAME = os.getenv('MY_DISCORD_GUILD')
 RIBBY_CHANNEL_ID = os.getenv('RIBBY_CHANNEL_ID')
+RIBBY_CHANNEL_NAME = os.getenv('RIBBY_CHANNEL_NAME')
 
 intents = discord.Intents.all()
 intents.members = True
@@ -20,7 +21,7 @@ client = discord.Client(intents=intents)
 @tasks.loop(minutes = 1)
 async def weekly_message():
     # Calculate the next Tuesday at 1 PM
-    target_time = datetime.now(pytz.timezone("America/Chicago")).replace(hour=13, minute=0, second=0, microsecond=0)
+    target_time = datetime.now(pytz.timezone("America/Chicago")).replace(hour=13, minute=25, second=0, microsecond=0)
     
     days_ahead = 1 - target_time.weekday()  # 1 corresponds to Tuesday
     if days_ahead <= 0:  # If today is Tuesday and we are past 1 PM, set for next week
@@ -29,12 +30,12 @@ async def weekly_message():
     target_time += timedelta(days=days_ahead)
     await discord.utils.sleep_until(target_time)
 
-    channel = client.get_channel(RIBBY_CHANNEL_ID)
+    channel = discord.utils.get(client.get_all_channels(), name = RIBBY_CHANNEL_NAME)
     
     if channel:
         await channel.send(file=discord.File('images/bisontuesday.gif'))
     else:
-        print(f"Channel with ID {RIBBY_CHANNEL_ID} not found.")
+        print(f"Channel with name '{RIBBY_CHANNEL_NAME}' not found.")
 
 #@client.event
 #async def on_member_join(member):
