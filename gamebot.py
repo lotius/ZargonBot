@@ -3,9 +3,20 @@ import commands
 import discord
 import pytz
 
+import requests
+from random import randint
+from time import sleep
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from discord.ext import tasks
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+
+# URL to poll, and the search title to poll for
+instruction_url = 'https://instructions.hasbro.com/en-us/all-instructions?search=heroquest'
+title = 'Against the Ogre Horde'
 
 load_dotenv()
 
@@ -13,6 +24,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD_NAME = os.getenv('MY_DISCORD_GUILD')
 RIBBY_CHANNEL_ID = os.getenv('RIBBY_CHANNEL_ID')
 RIBBY_CHANNEL_NAME = os.getenv('RIBBY_CHANNEL_NAME')
+GENERAL_CHANNEL_NAME = os.getenv('GENERAL_CHANNEL_NAME')
 
 intents = discord.Intents.all()
 intents.members = True
@@ -37,6 +49,24 @@ async def weekly_message():
     else:
         print(f"Channel with name '{RIBBY_CHANNEL_NAME}' not found.")
 
+@tasks.loop(minutes=1)
+async def new_instructions_available():
+    response = requests.get(instruction_url)
+
+    if response.text.find(title) != -1:  # Check if the title is found in the response
+        filename = f"{title}.txt"  # Create a filename based on the title
+        if not os.path.isfile('found_instructions/' + filename):  # Check if the file doesn't exist
+            print('Found ' + title + '!')
+            channel = discord.utils.get(client.get_all_channels(), name=GENERAL_CHANNEL_NAME)
+            if channel:
+                await channel.send(f"Hey everyone! This is just to inform you that the new quest booklet for {title} is now available on the Hasbro Instructions webpage! https://instructions.hasbro.com")
+                # Write the filename to indicate the quest booklet has been processed
+                with open('found_instructions/' + filename, 'w') as file:
+                    file.write(f"{title} processed")
+            else:
+                print(f"Channel with name '{GENERAL_CHANNEL_NAME}' not found.")
+
+
 #@client.event
 #async def on_member_join(member):
     # get general channel object here
@@ -51,12 +81,13 @@ async def on_ready():
     guild = discord.utils.get(client.guilds, name=GUILD_NAME)
 
     print(
-        f'{client.user} is connected to the following guild:\n'
+        f'{client.user} is connected to the following guild(s):\n' \
         f'{guild.name} (id: {guild.id})'
     )
 
-    # Start the scheduling task
+    # Start the scheduled tasks
     weekly_message.start()
+    new_instructions_available.start()
     
 @client.event
 async def on_message(message):
